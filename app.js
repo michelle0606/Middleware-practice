@@ -7,9 +7,16 @@ const { showReq } = {
     const url = req.url
     const method = req.method
     const date = new Date()
-    console.log(
-      `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} | ${method} from ${url}`
-    )
+    const startHrTime = process.hrtime()
+    res.on('finish', () => {
+      const elapsedHrTime = process.hrtime(startHrTime)
+      const elapsedTimeInMs = Math.round(
+        elapsedHrTime[0] * 1000 + elapsedHrTime[1] / 1e6
+      )
+      console.log(
+        `${date.toLocaleDateString()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} | ${method} from ${url} | total time: ${elapsedTimeInMs}ms`
+      )
+    })
     next()
   }
 }
